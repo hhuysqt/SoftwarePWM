@@ -1,0 +1,85 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+D:\EmbedSystem\Projects\8051\PWM\proj\PWM.uvproj
+Project File Date:  03/29/2016
+
+<h2>Output:</h2>
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.c...
+assembling PWM.asm...
+linking...
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _PWMSET
+    MODULE:  .\main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _PWMSET
+    MODULE:  .\main.obj (MAIN)
+    ADDRESS: 00DAH
+Program Size: data=39.0 xdata=0 code=290
+"PWM" - 0 Error(s), 2 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _PWMSTART
+    MODULE:  .\main.obj (MAIN)
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _PWMSET
+    MODULE:  .\main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _PWMSET
+    MODULE:  .\main.obj (MAIN)
+    ADDRESS: 00DAH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _PWMSTART
+    MODULE:  .\main.obj (MAIN)
+    ADDRESS: 00EAH
+Program Size: data=39.0 xdata=0 code=292
+"PWM" - 0 Error(s), 4 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+assembling PWM.asm...
+..\src\PWM.asm(4): error A318: can't open file 'GPIOcfg.inc'
+..\src\PWM.asm(86): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(110): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(111): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(112): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(112): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(113): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(113): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(128): error A45: UNDEFINED SYMBOL (PASS-2)
+..\src\PWM.asm(136): error A45: UNDEFINED SYMBOL (PASS-2)
+Target not created
+Build target 'Target 1'
+assembling STARTUP.A51...
+assembling PWM.asm...
+linking...
+Program Size: data=39.0 xdata=0 code=290
+"PWM" - 0 Error(s), 0 Warning(s).

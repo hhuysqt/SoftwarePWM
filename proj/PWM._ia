@@ -1,0 +1,1 @@
+"..\src\PWM.asm" INCDIR(..\inc) SET (SMALL) DEBUG PRINT(.\PWM.lst) OBJECT(.\PWM.obj) EP
