@@ -5,10 +5,17 @@
 #define ENTER_CRITICAL __asm("CPSID I");
 #define EXIT_CRITICAL  __asm("CPSIE I");
 
-/*
+
+/************************************
+ *
  * private data structure 
- */
+ *
+ ************************************/
 #define MAX_HEAP_SIZE 18
+#define HEAP_INFINATE 0xffffffff
+#define H_PARENT(i) (i >> 1)
+#define H_LEFT(i)   (i << 1)
+#define H_RIGHT(i)  ((i << 1) + 1)
 typedef union {
 	u32 data[MAX_HEAP_SIZE];
 	u32 size;
@@ -44,16 +51,13 @@ typedef struct {
 	pwm_dma_queue_t dma_queue;
 } pwm_info_t;
 
-#define HEAP_INFINATE 0xffffffff
-#define H_PARENT(i) (i >> 1)
-#define H_LEFT(i)   (i << 1)
-#define H_RIGHT(i)  ((i << 1) + 1)
 
 
-
-/*
+/************************************
+ *
  * private varibles 
- */
+ *
+ ************************************/
 #if (USE_PWMDMA_GROUP & PWMDMA_GROUP1)
 pwm_info_t PWM1;
 #endif
@@ -64,10 +68,13 @@ pwm_info_t PWM2;
 pwm_info_t PWM3;
 #endif
 
-/*
+
+/************************************
+ *
  * Private functions
  *  Build and retain a min-heap
- */
+ *
+ ************************************/
 static __inline void HeapInit(heap_t *h)
 {
 	int i;
@@ -136,16 +143,6 @@ static __inline void HeapDelete(heap_t *h, int n)
 	}
 }
 
-static __inline void HeapDeleteMin(heap_t *h)
-{
-	if(1 <= h->size)
-	{
-		h->data[1] = h->data[h->size];
-		h->data[h->size--] = HEAP_INFINATE;
-		HeapPercolateDown(h, 1);
-	}
-}
-
 static __inline void HeapBuild(heap_t *h)
 {
 	int i;
@@ -154,7 +151,16 @@ static __inline void HeapBuild(heap_t *h)
 }
 
 
-/* Low level initialization */
+
+/************************************
+ *
+ * Interfaces
+ *
+ ************************************/
+/*
+ * Low level initialization 
+ *  Init GPIO, TIM, DMA, NVIC for each group
+ */
 int PWMLowLevelInit(PWM_group_t group, GPIO_TypeDef *GPIO, PWM_channel channel)
 {
 	typedef enum {
@@ -200,7 +206,6 @@ int PWMLowLevelInit(PWM_group_t group, GPIO_TypeDef *GPIO, PWM_channel channel)
 	io.GPIO_Pin = channel;
 	GPIO_Init(GPIO, &io);
 	
-	/* Initialze DMA and TIM, and then fill PWM DMA queue with default value */
 	/* 
 	 * PWM DMA group configure:
 	 *
@@ -262,6 +267,8 @@ int PWMLowLevelInit(PWM_group_t group, GPIO_TypeDef *GPIO, PWM_channel channel)
 			default:
 				return -1;
 		}
+		
+		/* Initialize them all */
 		{
 			/* Private data structure */
 			int i;
@@ -305,7 +312,6 @@ int PWMLowLevelInit(PWM_group_t group, GPIO_TypeDef *GPIO, PWM_channel channel)
 			/* Select a DMA channel IRQ */
 			DMA_ITConfig(dma_gpio, DMA_IT_HT | DMA_IT_TC, ENABLE);
 		}
-		
 		{
 			/* NVIC */
 			NVIC_InitTypeDef nvic;
@@ -317,7 +323,6 @@ int PWMLowLevelInit(PWM_group_t group, GPIO_TypeDef *GPIO, PWM_channel channel)
 			nvic.NVIC_IRQChannelSubPriority = 0;
 			NVIC_Init(&nvic);
 		}
-		
 		{
 			/* timer */
 			TIM_TimeBaseInitTypeDef timbase;
@@ -328,9 +333,8 @@ int PWMLowLevelInit(PWM_group_t group, GPIO_TypeDef *GPIO, PWM_channel channel)
 			timbase.TIM_ClockDivision = 0;
 			timbase.TIM_RepetitionCounter = 0;
 			TIM_TimeBaseInit(tim, &timbase);
+			TIM_SelectCCDMA(tim, ENABLE);
 		}
-		
-		TIM_SelectCCDMA(tim, ENABLE);
 	}
 	return 0;
 }
@@ -574,7 +578,10 @@ u32 GetRestPulse(PWM_group_t group, PWM_channel channel)
 
 
 /*
- * Calculate the 2 dma queues
+ * Private function
+ *  Calculate the 2 dma queues
+ *  Only referenced in the DMA IRQ functions
+ *  Inlined in them when compiled with -O3, -Otime
  */
 static int _CalcQueue(pwm_info_t *pwm, int curnum)
 {
@@ -613,8 +620,7 @@ static int _CalcQueue(pwm_info_t *pwm, int curnum)
 				n = H_PARENT(n);
 
 				{
-					/*
-					 * heap number template:
+					/* heap number template:
 					 * |---- 27 bits ----|- 4 bits -|- 1 bit -|
 					 * |   phace value   |  channel | IO level|
 					 */
@@ -680,11 +686,11 @@ static int _CalcQueue(pwm_info_t *pwm, int curnum)
 	return curnum;
 }
 /*
- * DMA IRQ
+ * DMA IRQs
  *  Calculate 2 queues for GPIO->BSRR and TIM->ARR
  */
-/*
- * calculate model
+/* 
+ * Double-buffered calculate model:
  *
  * start:
  *   |________| |________|
@@ -794,7 +800,8 @@ void DMA1_Channel2_IRQHandler(void)
 			DMA1_Channel2->CNDTR = 
 			DMA1_Channel3->CNDTR = PWMCHANNELS*2;
 			
-			DMA1_Channel2->CCR &= ~DMA_IT_HT;
+			DMA1->IFCR = DMA1_IT_GL2;
+			DMA1_Channel2->CCR |= DMA_IT_HT;
 		}
 	}
 	
@@ -843,7 +850,8 @@ void DMA1_Channel4_IRQHandler(void)
 			DMA1_Channel4->CNDTR = 
 			DMA1_Channel5->CNDTR = PWMCHANNELS*2;
 			
-			DMA1_Channel4->CCR &= ~DMA_IT_HT;
+			DMA1->IFCR = DMA1_IT_GL4;
+			DMA1_Channel4->CCR |= DMA_IT_HT;
 		}
 	}
 	
