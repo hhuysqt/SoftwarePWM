@@ -1,5 +1,0 @@
-"STARTUP.obj",
-".\main.obj",
-".\PWM.obj" 
-TO "PWM" 
-RAMSIZE(256) 
