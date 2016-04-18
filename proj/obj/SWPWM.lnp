@@ -1,0 +1,14 @@
+--cpu Cortex-M3
+".\obj\pwm.o"
+".\obj\main.o"
+".\obj\misc.o"
+".\obj\stm32f10x_dma.o"
+".\obj\stm32f10x_gpio.o"
+".\obj\stm32f10x_rcc.o"
+".\obj\stm32f10x_tim.o"
+".\obj\startup_stm32f10x_hd.o"
+".\obj\system_stm32f10x.o"
+--strict --scatter ".\obj\SWPWM.sct"
+--summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list ".\SWPWM.map" -o .\obj\SWPWM.axf
